@@ -1,4 +1,4 @@
-const { createUser, findUser } = require("./userController");
+const { createUser, findUser,getUsers } = require("./userController");
 
 const addUser = async (req, res) => {
   try {
@@ -29,13 +29,31 @@ const addUser = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const user = await findUser(req.body);
-    if (user)
+
+   
+    const {user , token} = await findUser(req.body);
+    if (user){
+        // 8 hours × 60 minutes × 60 seconds × 1000 milliseconds
+      res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
       res.json({ message: "User is logged in successfully", data: user });
+    }
     else throw new Error("Invalid credentials");
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-module.exports = { addUser, getUser };
+
+const getAllUsersFunc = async(req,res)=>{
+  try {
+
+   
+      const users = await getUsers();
+      if(!users) throw new Error("No user exist")
+      res.json({ message: "All users get from the DB", data: users });
+   
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+module.exports = { addUser, getUser  , getAllUsersFunc};

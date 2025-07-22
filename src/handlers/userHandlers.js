@@ -27,4 +27,8 @@ const findUserOnDB = async (userData) => {
   if (!passwordHash) throw new Error("Invalid Credentials");
   return user;
 };
-module.exports = { userAddedToDB, findUserOnDB };
+
+const getUsersFromDB = async()=>{
+   return  await User.findAll();
+}
+module.exports = { userAddedToDB, findUserOnDB ,getUsersFromDB};

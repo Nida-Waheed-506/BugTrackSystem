@@ -1,12 +1,13 @@
-const { DataTypes} = require('sequelize');
+const sequelize = require('sequelize');
 const {db} = require('../config/db');
+//User is model name and in db  Users  table is created automatically if you not give table name
 const User = db.define('User', {
     name: {
-        type: DataTypes.STRING,
+        type: sequelize.DataTypes.STRING,
          allowNull: false,
     },
     email: {
-          type: DataTypes.STRING,
+         type: sequelize.DataTypes.STRING,
           allowNull : false,
           unique : true,
           validate : {
@@ -14,15 +15,15 @@ const User = db.define('User', {
           }
     },
     password: {
-          type: DataTypes.STRING,
+        type: sequelize.DataTypes.STRING,
           allowNull : false,
     },
     user_type: {
-           type: DataTypes.STRING,
+         type: sequelize.DataTypes.STRING,
            allowNull : false,
     },
     mobile_number: {
-          type: DataTypes.STRING,
+          type: sequelize.DataTypes.STRING,
           allowNull: false,
     }
 
