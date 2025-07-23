@@ -1,6 +1,12 @@
-const { userAddedToDB, findUserOnDB ,getUsersFromDB} = require("../../handlers/userHandlers");
+const {
+  userAddedToDB,
+  findUserOnDB,
+  getUsersFromDB,
+} = require("../../handlers/userHandlers");
 const { validateUserData } = require("../../utils/userValidation");
 const { generateToken } = require("../../utils/generateToken");
+
+
 const createUser = async (userData) => {
   //validate the user
 
@@ -19,14 +25,14 @@ const findUser = async (userData) => {
   //find user
   const user = await findUserOnDB(userData);
 
-    //  add the cookies
+  //  add the cookies
 
   const token = await generateToken(user);
   return { user, token };
 };
 
-const getUsers = async ()=>{
-     return await getUsersFromDB();
-}
+const getUsers = async (id) => {
+  return await getUsersFromDB(id);
+};
 
-module.exports = { createUser, findUser , getUsers };
+module.exports = { createUser, findUser, getUsers };

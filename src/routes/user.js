@@ -12,7 +12,7 @@ userRouter.post("/logout", async (req, res) => {
   // expire the cookies
   res.cookie("token", null, { expires: new Date(Date.now()) });
 
-  res.json({ message: "User logged out successfully" });
+  res.status(200).json({ message: "Logout successfully" });
 });
 
 userRouter.get("/users", userAuth, isManager, getAllUsersFunc);

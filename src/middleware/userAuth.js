@@ -1,25 +1,21 @@
-const {User} = require('../models/user');
+const { User } = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 const userAuth = async (req, res, next) => {
   try {
-
-
     //read token form the cookies (attach with request)
 
- 
-    const {token} = req.cookies;
-  
+    const { token } = req.cookies;
 
     // validate the token
-    if (!token) return res.status(401).json({ message: "Login again" });
+    if (!token) return res.status(401).json({ error: "Login again" });
 
-    //if token is valid then return object 
-    const decodedObj = await jwt.verify(token,  "NidaWaheedpucit@123");
-    const {id} = decodedObj;
-    // find by id that user exist or not 
-    const user = await User.findOne({where: {id : id}});
-    if(!user) throw new Error("User not found");
+    //if token is valid then return object
+    const decodedObj = await jwt.verify(token, "NidaWaheedpucit@123");
+    const { id } = decodedObj;
+    // find by id that user exist or not
+    const user = await User.findOne({ where: { id: id } });
+    if (!user) throw new Error("User not found");
     req.user = user;
     next();
   } catch (err) {

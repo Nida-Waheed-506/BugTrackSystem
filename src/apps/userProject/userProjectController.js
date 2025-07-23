@@ -2,6 +2,7 @@ const {
   projectAssignDB,
   getAllAssignedDevFromDB,
   retrieveUserFromDB,
+  retrieveProjectFromDB
 } = require("../../handlers/user_projectHandlers");
 const { sendEmail } = require("../../utils/sendEmail");
 const projectAssign = async (manager_id, project_id, assigned_UserId) => {
@@ -12,7 +13,8 @@ const projectAssign = async (manager_id, project_id, assigned_UserId) => {
   );
   if (projectAssign) {
     const user = await retrieveUserFromDB(projectAssign.assigned_UserId);
-    if (user) sendEmail(user);
+    const project = await retrieveProjectFromDB(projectAssign.project_id);
+    sendEmail(user , project , "project");
   }
 
   return projectAssign;

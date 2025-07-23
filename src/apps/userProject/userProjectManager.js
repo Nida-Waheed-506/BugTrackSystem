@@ -1,7 +1,4 @@
-const {
-  projectAssign,
-  getAllAssignedDev,
-} = require("./userProjectController"); 
+const { projectAssign, getAllAssignedDev } = require("./userProjectController");
 
 const assignedProjectFun = async (req, res, next) => {
   try {
@@ -9,8 +6,8 @@ const assignedProjectFun = async (req, res, next) => {
     const { project_id } = req.params;
     const { assigned_UserId } = req.body;
     const projectAssigned = await projectAssign(
-      manager_id,
-      project_id,
+      manager_id.toString(),
+      project_id.toString(),
       assigned_UserId
     );
     if (projectAssigned)
@@ -19,7 +16,7 @@ const assignedProjectFun = async (req, res, next) => {
         data: projectAssigned,
       });
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -27,14 +24,14 @@ const getAllAssignedDevToProjFun = async (req, res, next) => {
   const { project_id } = req.params;
 
   try {
-    const allAssignedUsers = await getAllAssignedDev(project_id);
+    const allAssignedUsers = await getAllAssignedDev(project_id.toString());
     if (allAssignedUsers)
-      res.json({
-        message: "All users assigned to project",
+      res.status(200).json({
+        message: "All developers assigned to project",
         data: allAssignedUsers,
       });
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(404).json({ error: error.message });
   }
 };
 

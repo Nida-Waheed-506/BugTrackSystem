@@ -4,10 +4,12 @@ const { User } = require("../models/user");
 const { Op } = require("sequelize");
 
 const projectAssignDB = async (manager_id, project_id, assigned_UserId) => {
+  const isUserExists = await User.findOne({ where: { id: assigned_UserId } });
+  if (!isUserExists) throw new Error("User not exists");
   const userISQADev = await User.findOne({
     where: {
       id: assigned_UserId,
-      user_type: { [Op.or]: ["Developer", "QA"] },
+      user_type: { [Op.or]: ["developer", "QA"] },
     },
   });
   if (!userISQADev)
@@ -36,9 +38,13 @@ const retrieveUserFromDB = async (user_Id) => {
   return await User.findOne({ where: { id: user_Id } });
 };
 
+const retrieveProjectFromDB= async(project_id)=>{
+  console.log(project_id);
+  return await Project.findOne({where:{id:project_id}});
+}
 const getAllAssignedDevFromDB = async (project_id) => {
-  return await User_Project.findAll({
-    where: { project_id },
+  const devs = await User_Project.findAll({
+    where: { project_id: project_id },
     include: [
       {
         model: User,
@@ -47,10 +53,15 @@ const getAllAssignedDevFromDB = async (project_id) => {
       },
     ],
   });
+
+  if (devs.length === 0)
+    throw new Error("No developer assigned to that project");
+  return devs;
 };
 
 module.exports = {
   projectAssignDB,
   getAllAssignedDevFromDB,
   retrieveUserFromDB,
+  retrieveProjectFromDB
 };

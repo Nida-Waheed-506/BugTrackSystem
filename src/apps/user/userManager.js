@@ -1,19 +1,18 @@
-const { createUser, findUser,getUsers } = require("./userController");
+const { createUser, findUser, getUsers } = require("./userController");
 
 const addUser = async (req, res) => {
   try {
     const { user, token } = await createUser(req.body);
     // 8 hours × 60 minutes × 60 seconds × 1000 milliseconds
     res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
-
-    res.json({ message: "Sign up Successfully ", data: user });
+    res.status(201).json({ message: "Sign-up Successfully ", data: user });
   } catch (error) {
     if (error.name === "SequelizeValidationError") {
       return res.status(400).json({
         error: "Invalid email format",
       });
     } else if (error.name === "SequelizeUniqueConstraintError") {
-      return res.status(400).json({
+      return res.status(409).json({
         error: "User already exists",
       });
     }
@@ -29,31 +28,29 @@ const addUser = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-
-   
-    const {user , token} = await findUser(req.body);
-    if (user){
-        // 8 hours × 60 minutes × 60 seconds × 1000 milliseconds
-      res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
-      res.json({ message: "User is logged in successfully", data: user });
-    }
-    else throw new Error("Invalid credentials");
+    const { user, token } = await findUser(req.body);
+    if (user) {
+      // 8 hours × 60 minutes × 60 seconds × 1000 milliseconds
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      });
+      res.status(200).json({ message: "Logged-in successfully", data: user });
+    } else throw new Error("Invalid credentials");
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(404).json({ error : error.message });
+  }
+};
+
+const getAllUsersFunc = async (req, res) => {
+  try {
+    const {id} = req.user;
+    const users = await getUsers(id);
+    if (!users) throw new Error("No user exist");
+    res.status(200).json({ message: "Users Detail ", data: users });
+  } catch (error) {
+    res.status(400).json({ error : error.message });
   }
 };
 
 
-const getAllUsersFunc = async(req,res)=>{
-  try {
-
-   
-      const users = await getUsers();
-      if(!users) throw new Error("No user exist")
-      res.json({ message: "All users get from the DB", data: users });
-   
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-}
-module.exports = { addUser, getUser  , getAllUsersFunc};
+module.exports = { addUser, getUser, getAllUsersFunc };

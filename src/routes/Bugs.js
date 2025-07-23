@@ -27,6 +27,6 @@ bugRouter.get('/project/:project_id/bugs', userAuth, getAllBugsOfProjectFunc);
 
 //Developer & QA update the status
 
-bugRouter.patch("/bug/:bug_id/status", userAuth, isQAandDev, statusChangeFunc);
+bugRouter.patch("/project/:project_id/bugs/:bug_id/status", userAuth, isQAandDev, statusChangeFunc);
 
 module.exports = { bugRouter };

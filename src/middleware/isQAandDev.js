@@ -1,9 +1,13 @@
-const isQAandDev = async(req, res, next)=>{
+const isQAandDev = async (req, res, next) => {
+  try {
+    const { user_type } = req.user;
 
-    const {user_type} = req.user;
-  
-    if(user_type !== "developer" && user_type !== "QA") throw new Error("Only QA and Developer handle the status of bug or feature");
-    next(); 
-}
+    if (user_type !== "developer" && user_type !== "QA")
+      throw new Error("Only QA and Developer perform this action");
+    next();
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
-module.exports = {isQAandDev};
+module.exports = { isQAandDev };

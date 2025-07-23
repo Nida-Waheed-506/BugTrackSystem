@@ -9,8 +9,16 @@ const addProjectFunc = async (req, res, next) => {
     const project = await addProject(req.body, req?.file?.buffer, req.user);
 
     if (project)
-      res.json({ message: "Project added successfully", data: project });
+      res
+        .status(201)
+        .json({ message: "Project added successfully", data: project });
   } catch (error) {
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return res.status(409).json({
+        error: "Project with same name already exists.",
+      });
+    }
+
     if (error instanceof Error) {
       return res.status(400).json({ error: error.message });
     }
@@ -24,9 +32,9 @@ const getProjectsFunc = async (req, res, next) => {
     // get the project
     const projects = await getProjects(req.body, req.user);
     if (projects)
-      res.json({ message: "Projects get successfully", data: projects });
+      res.status(200).json({ message: "Projects Detail", data: projects });
   } catch (error) {
-    res.status(404).json({ message: "Projects No Found" });
+    res.status(404).json({ error: "Projects No Found" });
   }
 };
 
@@ -41,20 +49,24 @@ const updateProjectFunc = async (req, res, next) => {
     );
 
     if (project)
-      res.json({ message: "Project updated successfully", data: project });
+      res
+        .status(200)
+        .json({ message: "Project updated successfully", data: project });
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(404).json({ error: error.message });
   }
 };
 
 const deleteProjectFunc = async (req, res, next) => {
   try {
-    const { porject_id: projectId } = req.params;
+    const { project_id: projectId } = req.params;
+
     const { id: manager_id } = req.user;
     const project = await deleteProject(projectId, manager_id.toString());
-    if (project) res.json({ message: "Project deleted successfully" });
+    if (project)
+      res.status(200).json({ message: "Project deleted successfully" });
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(404).json({ error: error.message });
   }
 };
 

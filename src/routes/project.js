@@ -16,7 +16,7 @@ const upload = multer({ storage: storage });
 
 //create the project
 projectRouter.post(
-  "/projects",
+  "/project",
   userAuth,
   isManager,
   upload.single("image"),

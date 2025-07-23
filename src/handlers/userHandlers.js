@@ -1,5 +1,7 @@
 const { User } = require("../models/user");
 const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
+
 const userAddedToDB = async (userData) => {
   const { name, email, password, user_type, mobile_number } = userData;
 
@@ -28,7 +30,8 @@ const findUserOnDB = async (userData) => {
   return user;
 };
 
-const getUsersFromDB = async()=>{
-   return  await User.findAll();
-}
-module.exports = { userAddedToDB, findUserOnDB ,getUsersFromDB};
+const getUsersFromDB = async (id) => {
+  return await User.findAll({ where: { id: { [Op.ne]: id } } });
+};
+
+module.exports = { userAddedToDB, findUserOnDB, getUsersFromDB };

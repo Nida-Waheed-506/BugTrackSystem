@@ -1,18 +1,24 @@
 const sequelize = require("sequelize");
 const { db } = require("../config/db");
-const User_Project = db.define("User_Project", {
+const { User } = require("./user");
+const User_Project = db.define(
+  "User_Project",
+  {
     manager_id: {
-        type: sequelize.DataTypes.STRING,
+      type: sequelize.DataTypes.STRING,
     },
     project_id: {
-        type: sequelize.DataTypes.STRING,
+      type: sequelize.DataTypes.STRING,
     },
     assigned_UserId: {
-        type: sequelize.DataTypes.STRING,
-    }
+      type: sequelize.DataTypes.INTEGER,
+    },
+  },
+  {
+    tablename: "User_Project",
+  }
+);
 
-}, {
-    tablename: "User_Project"
-})
+User_Project.belongsTo(User, { foreignKey: "assigned_UserId" });
 
 module.exports = { User_Project };
